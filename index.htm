@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Shop</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; }
+    header { background:#333; color:#fff; padding:10px; text-align:center; }
+    .hero { background:url('https://i.ibb.co/bR8R0BvV/IMG-0895.jpg') center/cover no-repeat; height:90vh; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white; text-align:center; }
+    .hero h1 { font-size:40px; }
+    .btn { padding:10px 20px; background:#ff9800; color:#fff; border:none; cursor:pointer; }
+    .products { padding:20px; overflow-x:auto; display:flex; gap:15px; }
+    .card { min-width:200px; border:1px solid #ddd; padding:10px; text-align:center; }
+    .card img { width:100%; }
+    .cart-icon { position:fixed; top:20px; right:20px; background:#ff9800; padding:10px; border-radius:50%; cursor:pointer; }
+    .cart-count { color:white; font-weight:bold; }
+    .cart { position:fixed; right:-300px; top:0; width:300px; height:100%; background:#fff; box-shadow:-2px 0 5px rgba(0,0,0,0.3); padding:20px; transition:0.3s; overflow:auto; }
+    .cart.open { right:0; }
+    .whatsapp { position:fixed; bottom:20px; right:20px; background:#25D366; color:#fff; padding:10px; border-radius:50%; text-decoration:none; }
+  </style>
+</head>
+<body><header>
+  <h2>Open Shop</h2>
+  <p>Fresh finds, Best prices</p>
+</header><div class="hero">
+  <h1>Welcome to Open Shop</h1>
+  <button class="btn" onclick="scrollToProducts()">Shop Now</button>
+</div><section id="products" class="products">
+  <div class="card">
+    <img src="https://i.ibb.co/0pbR3zj6/IMG-20260222-WA0000.jpg">
+    <h3>Product 1</h3>
+    <button onclick="addToCart('Product 1')">Add</button>
+  </div>
+</section><div class="cart-icon" onclick="toggleCart()">
+  🛒 <span class="cart-count" id="count">0</span>
+</div><div class="cart" id="cart">
+  <h3>Your Cart</h3>
+  <ul id="cartItems"></ul>
+  <input type="text" id="name" placeholder="Your Name"><br><br>
+  <input type="text" id="phone" placeholder="Phone Number"><br><br>
+  <button onclick="sendOrder()">Send Order</button>
+</div><a class="whatsapp" href="https://wa.me/1234567890">💬</a>
+
+<script>
+  (function(){ emailjs.init("YOUR_PUBLIC_KEY"); })();
+
+  let cart = [];
+
+  function scrollToProducts() {
+    document.getElementById("products").scrollIntoView({behavior:"smooth"});
+  }
+
+  function addToCart(item) {
+    cart.push(item);
+    document.getElementById("count").innerText = cart.length;
+    renderCart();
+  }
+
+  function toggleCart() {
+    document.getElementById("cart").classList.toggle("open");
+  }
+
+  function renderCart() {
+    let list = document.getElementById("cartItems");
+    list.innerHTML = "";
+    cart.forEach(item => {
+      let li = document.createElement("li");
+      li.textContent = item;
+      list.appendChild(li);
+    });
+  }
+
+  function sendOrder() {
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+
+    emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",{
+      customer_name:name,
+      customer_phone:phone,
+      order:cart.join(", "),
+      to_email:"Radhanshraut55@gmail.com"
+    }).then(()=>{
+      alert("Order sent successfully!");
+    });
+  }
+</script></body>
+</html>
